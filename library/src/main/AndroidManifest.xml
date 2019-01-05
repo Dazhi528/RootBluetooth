@@ -1,0 +1,13 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.wzz.bluetooth">
+
+    <!--配置蓝牙相关权限-->
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <!--如果您要声明您的应用仅适用于支持BLE的设备,请设置true-->
+    <uses-feature android:name="android.hardware.bluetooth_le"
+        android:required="false"/>
+    <!-- 允许程序访问CellID或WiFi热点来获取粗略的位置（安卓6.0用蓝牙必须开） -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+</manifest>
