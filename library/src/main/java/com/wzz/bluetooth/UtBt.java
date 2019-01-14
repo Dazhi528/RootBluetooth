@@ -28,7 +28,7 @@ import java.util.Set;
  * 创建日期：2019/1/4 09:17
  * 修改日期：2019/1/4 09:17
  */
-public class UtLibBt {
+public class UtBt {
 
     // 用于回调蓝牙设备接口
     public interface InteLibBtDevice {
