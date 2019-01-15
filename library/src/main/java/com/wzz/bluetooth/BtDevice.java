@@ -41,15 +41,15 @@ public class BtDevice {
     private final BtIo btIo; // 用于管理设备io操作
 
 
-    // 构造方法
-    public BtDevice(BluetoothDevice bluetoothDevice){
-        this(bluetoothDevice, UUID_BLUETOOTH_SERIAL);
+    // 构造方法(booBle：true时，开ble功能)
+    public BtDevice(BluetoothDevice bluetoothDevice, boolean booBle){
+        this(bluetoothDevice, UUID_BLUETOOTH_SERIAL, booBle);
     }
-    public BtDevice(BluetoothDevice bluetoothDevice, UUID uuidServer) {
+    public BtDevice(BluetoothDevice bluetoothDevice, UUID uuidServer, boolean booBle) {
         if(bluetoothDevice==null || uuidServer==null){
             throw new UnsupportedOperationException("null can't instantiate me");
         }
-        btIo=new BtIo(bluetoothDevice, uuidServer);
+        btIo=new BtIo(bluetoothDevice, uuidServer, booBle);
     }
 
 

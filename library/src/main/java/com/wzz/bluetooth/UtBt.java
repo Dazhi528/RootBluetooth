@@ -1,6 +1,5 @@
 package com.wzz.bluetooth;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -14,7 +13,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Build;
-
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;

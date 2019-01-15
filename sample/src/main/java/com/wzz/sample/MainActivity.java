@@ -240,11 +240,7 @@ public class MainActivity extends AppCompatActivity {
     // 关闭客户端应用程序
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     public void close() {
-        if (bluetoothGatt == null) {
-            return;
-        }
-        bluetoothGatt.close();
-        bluetoothGatt = null;
+
     }
 
 

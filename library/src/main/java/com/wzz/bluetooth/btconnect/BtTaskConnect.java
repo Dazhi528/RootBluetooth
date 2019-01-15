@@ -29,7 +29,7 @@ public class BtTaskConnect extends BaseBtTask<BtRqstCmdConnect> {
     public void run() {
         super.run();
         //
-        btIo.reConnect();
+        btIo.reConnectDef();
         btIo=null;
     }
 
