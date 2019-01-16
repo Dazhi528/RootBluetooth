@@ -8,7 +8,6 @@ package com.wzz.bluetooth.btbase;
  * 创建日期：2019/1/14 16:25
  * 修改日期：2019/1/14 16:25
  */
-public interface InteBtTaskCall {
-    void callCmd(String strCmd);
-    void callRead(byte[] bytes);
+public interface InteBtWirteCall {
+    void call(byte[] bytes);
 }

@@ -10,8 +10,9 @@ package com.wzz.bluetooth.btbase;
  */
 public abstract class BaseBtTask<T extends BaseBtCmd> implements Runnable, Comparable<BaseBtTask> {
     protected T btRqstCmd; // 请求命令
+    protected InteBtTaskCall inteBtTaskCall;
     private int intPriority; // 优先级(数值越大，优先级越高)
-    private InteBtTaskCall inteBtTaskCall;
+
 
     public String getBtRqstCmdStr() {
         if(btRqstCmd==null){
@@ -42,7 +43,7 @@ public abstract class BaseBtTask<T extends BaseBtCmd> implements Runnable, Compa
     @Override
     public void run() {
         if(inteBtTaskCall!=null && btRqstCmd!=null){
-            inteBtTaskCall.call(btRqstCmd.getCmdStr());
+            inteBtTaskCall.callCmd(btRqstCmd.getCmdStr());
         }
     }
 

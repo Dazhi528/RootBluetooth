@@ -1,6 +1,5 @@
 package com.wzz.bluetooth;
 
-import android.annotation.TargetApi;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
@@ -10,12 +9,10 @@ import android.bluetooth.BluetoothProfile;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.os.Build;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -37,6 +34,7 @@ public class BtIo {
     // BLE蓝牙  GATT(Generic Attribute 通用属性;  Profile 配置文件)
     private volatile BluetoothGatt bluetoothGatt; // ble蓝牙连接
     private BluetoothGattCallback bluetoothGattCallback;
+
 
     // 构造函数； booBle：true时，开ble功能
     BtIo(BluetoothDevice bluetoothDevice, UUID uuidServer, boolean booBle) {
@@ -183,7 +181,7 @@ public class BtIo {
     }
 
     // 校验是否连接
-    private boolean booConnectDef() {
+    public boolean booConnectDef() {
         if (bluetoothSocket != null && inputStream != null && outputStream != null) {
             return bluetoothSocket.isConnected();
         }

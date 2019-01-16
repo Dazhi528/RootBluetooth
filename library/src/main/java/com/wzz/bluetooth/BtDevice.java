@@ -1,15 +1,17 @@
 package com.wzz.bluetooth;
 
 import android.bluetooth.BluetoothDevice;
-
 import com.wzz.bluetooth.btbase.BaseBtTask;
 import com.wzz.bluetooth.btbase.InteBtTaskCall;
-import com.wzz.bluetooth.btconnect.BtTaskConnect;
+import com.wzz.bluetooth.btbase.InteBtWirteCall;
+import com.wzz.bluetooth.bttask.BtTaskWrite;
 
 import java.util.ArrayList;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.PriorityBlockingQueue;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -37,6 +39,9 @@ public class BtDevice {
     // 用于存储当前任务数量
     private final AtomicInteger AINT_CUR_TASK_COUNT = new AtomicInteger();
     private final ArrayList<String> lsTaskTag = new ArrayList<>();
+    // 管理线程连接与关闭
+    private final ScheduledExecutorService SCHEDULED_SERVICE;
+    private boolean booCancle=false; // 默认不是销毁线程池
     //
     private final BtIo btIo; // 用于管理设备io操作
 
@@ -50,19 +55,59 @@ public class BtDevice {
             throw new UnsupportedOperationException("null can't instantiate me");
         }
         btIo=new BtIo(bluetoothDevice, uuidServer, booBle);
+        if(!booBle){
+            SCHEDULED_SERVICE= (ScheduledExecutorService) Executors.newScheduledThreadPool(1).scheduleWithFixedDelay(new Runnable() {
+                @Override
+                public void run() {
+                    // 如果设置了销毁，而且已经没有了线程任务，则销毁
+                    if(booCancle && AINT_CUR_TASK_COUNT.get()<=0){
+                        EXECUTOR_SERVICE.shutdownNow();
+                        SCHEDULED_SERVICE.shutdownNow();
+                        return;
+                    }
+                    // 周期执行判断是连接还是断开
+                    if(AINT_CUR_TASK_COUNT.get()>0 && !btIo.booConnectDef()){
+                        btIo.reConnectDef();
+                    }else {
+                        btIo.close();
+                    }
+                }
+            }, 0, 2, TimeUnit.SECONDS);
+        }else {
+            SCHEDULED_SERVICE=null;
+        }
     }
 
 
-    // ======外部控制部分=========
-    // 连接设备方法
-    public void connect(){
-        BtTaskConnect btTaskConnect=new BtTaskConnect(btIo, new InteBtTaskCall() {
+    /**=======================================
+     * 作者：WangZezhi  (2019/1/16  15:23)
+     * 功能：外部控制部分
+     * 描述：
+     *=======================================*/
+    // 关闭线程池
+    public void cancel(){
+        booCancle=true;
+    }
+
+    // 发送数据方法方法
+    public void write(byte[] byteArr, InteBtWirteCall inteBtWirteCall){
+        write(byteArr, 1, inteBtWirteCall);
+    }
+    public void write(byte[] byteArr, int intPriority, final InteBtWirteCall inteBtWirteCall){
+        BtTaskWrite btTaskWrite=new BtTaskWrite(byteArr, intPriority, btIo, new InteBtTaskCall() {
             @Override
-            public void call(String strCmd) {
+            public void callCmd(String strCmd) {
                 taskCountDecrement(strCmd);
             }
+
+            @Override
+            public void callRead(byte[] bytes) {
+                // 写数据后，设备返回的字节数组
+                inteBtWirteCall.call(bytes);
+            }
         });
-        exec(btTaskConnect);
+        // 执行任务
+        exec(btTaskWrite);
     }
 
 
@@ -89,7 +134,10 @@ public class BtDevice {
     // 任务计数减控制
     private synchronized void taskCountDecrement(String strCmd){
         lsTaskTag.remove(strCmd);
-        AINT_CUR_TASK_COUNT.decrementAndGet();
+        int intCount=AINT_CUR_TASK_COUNT.decrementAndGet();
+        if(intCount<0){
+            AINT_CUR_TASK_COUNT.set(0);
+        }
     }
 
 
