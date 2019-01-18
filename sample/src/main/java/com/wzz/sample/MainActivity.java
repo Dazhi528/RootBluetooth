@@ -5,6 +5,8 @@ import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -20,6 +22,7 @@ import android.widget.Toast;
 
 import com.wzz.bluetooth.UtBt;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,9 +36,13 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     private BluetoothAdapter bluetoothAdapter;
     private DeviceListAdapter deviceListAdapter; //配对列表适配器
+    private DeviceListAdapter adapterPair; //待配对列表适配器
+    private final List<BluetoothDevice> lsPair=new ArrayList<>(); //待配对的设备列表
     private int intCurPosition = -1; // 配对列表当前选择的位置
+    UtBt.FoundBtReceiver foundBtReceiver; //搜索蓝牙设备
     //
     private Button btToSetPair;
+
 
 
     @Override
@@ -69,9 +76,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        updateUI();
+    }
+
+    private void updateUI(){
         List<BluetoothDevice> printerDevices = UtBt.getBtPairedList(bluetoothAdapter);
         deviceListAdapter.clear();
         deviceListAdapter.addAll(printerDevices);
+        deviceListAdapter.notifyDataSetChanged();
         //
         if (printerDevices.size() > 0) {
             btToSetPair.setText("配对更多设备");
@@ -86,18 +98,44 @@ public class MainActivity extends AppCompatActivity {
         btToSetPair.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                UtBt.FoundBtReceiver aa = UtBt.startFoundBtDefDevice(this, bluetoothAdapter, new UtBt.InteLibBtDevice(){
-//                    @Override
-//                    public void callBtDevice(BluetoothDevice bluetoothDevice) {
-//
-//                    }
-//                    @Override
-//                    public void callBtDiscoveryFinished() {
-//
-//                    }
-//                });
-//
-//                UtBt.stopFoundBtDefDevice(Context context, BluetoothAdapter bluetoothAdapter, FoundBtReceiver foundBtReceiver);
+                if(foundBtReceiver!=null){
+                    return;
+                }
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        foundBtReceiver = UtBt.startFoundBtDefDevice(MainActivity.this, bluetoothAdapter, new UtBt.InteLibBtDevice(){
+                            @Override
+                            public void callBtDevice(BluetoothDevice bluetoothDevice) {
+                                // 绑定的直接返回
+                                if(bluetoothDevice.getBondState()==BluetoothDevice.BOND_BONDED){
+                                    return;
+                                }
+                                // 没绑定的添加
+                                if(lsPair.contains(bluetoothDevice)){
+                                    return;
+                                }
+                                lsPair.add(bluetoothDevice);
+                                adapterPair.notifyDataSetChanged();
+                            }
+                            @Override
+                            public void callBtDiscoveryFinished() {
+                                UtBt.stopFoundBtDefDevice(MainActivity.this, bluetoothAdapter, foundBtReceiver);
+                                foundBtReceiver=null;
+                            }
+                        });
+                    }
+                }).start();
+                // 定时关闭
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(foundBtReceiver!=null){
+                            UtBt.stopFoundBtDefDevice(MainActivity.this, bluetoothAdapter, foundBtReceiver);
+                        }
+                        foundBtReceiver=null;
+                    }
+                }, 30000);
             }
         });
         // 测试连接按钮点击事件
@@ -116,18 +154,37 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        // 配对设备列表项点击监听
+        // 已配对设备列表项点击监听
         ListView lvPairedDevice = findViewById(R.id.lv_paired_devices);
         lvPairedDevice.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 intCurPosition = position;
                 deviceListAdapter.notifyDataSetChanged();
+                // 停止搜索
+                if(foundBtReceiver!=null){
+                    UtBt.stopFoundBtDefDevice(MainActivity.this, bluetoothAdapter, foundBtReceiver);
+                }
             }
         });
         // 配对列表设置适配器
         deviceListAdapter=new DeviceListAdapter(this);
         lvPairedDevice.setAdapter(deviceListAdapter);
+        // 为配对设备
+        ListView lvPairDevice = findViewById(R.id.lv_pair_devices);
+        lvPairDevice.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // 停止搜索
+                if(foundBtReceiver!=null){
+                    UtBt.stopFoundBtDefDevice(MainActivity.this, bluetoothAdapter, foundBtReceiver);
+                }
+                // 去配对
+                UtBt.btCreateBond(lsPair.get(position));
+            }
+        });
+        adapterPair=new DeviceListAdapter(this);
+        lvPairDevice.setAdapter(adapterPair);
     }
 
     // 配对列表适配器实现类

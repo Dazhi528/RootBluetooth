@@ -10,12 +10,31 @@
         android:background="@color/colorGrayTertiary"
         android:gravity="center_vertical"
         android:paddingLeft="16dp"
-        android:text="选择一个已配对的打印设备"
+        android:text="已配对的打印设备"
         android:textColor="@color/textColorSecondary"
         android:textSize="14sp" />
 
     <ListView
         android:id="@+id/lv_paired_devices"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/colorWhite"
+        android:choiceMode="singleChoice"
+        android:divider="@android:drawable/divider_horizontal_bright" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@color/colorGrayTertiary"
+        android:gravity="center_vertical"
+        android:paddingLeft="16dp"
+        android:text="未配对的打印设备"
+        android:textColor="@color/textColorSecondary"
+        android:textSize="14sp" />
+
+    <ListView
+        android:id="@+id/lv_pair_devices"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
