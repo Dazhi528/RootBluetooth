@@ -86,8 +86,7 @@ public class MainActivity extends AppCompatActivity {
         btToSetPair.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                UtBt.FoundBtReceiver ;
-//                UtBt.startFoundBtDefDevice(this, bluetoothAdapter, new UtBt.InteLibBtDevice(){
+//                UtBt.FoundBtReceiver aa = UtBt.startFoundBtDefDevice(this, bluetoothAdapter, new UtBt.InteLibBtDevice(){
 //                    @Override
 //                    public void callBtDevice(BluetoothDevice bluetoothDevice) {
 //
