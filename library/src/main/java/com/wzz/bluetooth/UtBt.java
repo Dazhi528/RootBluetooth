@@ -85,7 +85,7 @@ public class UtBt {
     public static final int LIBINTENT_BT_RQSTENABLE = 2001;
 
     //打开经典蓝牙; 调用前需检查蓝牙是否打开：bluetoothAdapter.isEnabled()
-    //即：if(!bluetoothAdapter.isEnabled()) { UtLibBt.openBt(activity) }
+    //即：if(!bluetoothAdapter.isEnabled()) { UtBt.openBt(activity) }
     public static void openBt(Activity activity) {
         if (activity == null) {
             return;

@@ -20,4 +20,6 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "com.android.support:appcompat-v7:$supportLibraryVersion"
+
+    implementation 'com.github.Dazhi528:libBluetooth:1.0.0'
 }
