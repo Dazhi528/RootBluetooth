@@ -45,9 +45,9 @@ UtBt.openDiscoverable(Context context, int discoverTime)
 
 **搜索其他可配对设备** <br/>
 // 经典蓝牙 开始/停止 查找设备 <br/>
-FoundBtReceiver startFoundBtDefDevice(Context context, BluetoothAdapter bluetoothAdapter, InteLibBtDevice inteLibBtDevice) <br/>
+UtBt.FoundBtReceiver startFoundBtDefDevice(Context context, BluetoothAdapter bluetoothAdapter, UtBt.InteLibBtDevice inteLibBtDevice) <br/>
 
-UtBt.stopFoundBtDefDevice(Context context, BluetoothAdapter bluetoothAdapter, FoundBtReceiver foundBtReceiver) <br/>
+UtBt.stopFoundBtDefDevice(Context context, BluetoothAdapter bluetoothAdapter, UtBt.FoundBtReceiver foundBtReceiver) <br/>
 
 // BLE蓝牙 开始/停止 查找设备 <br/>
 BtBleScanCall startFoundBtBleDevice(final BluetoothAdapter bluetoothAdapter, final InteLibBtDevice inteLibBtDevice) <br/>

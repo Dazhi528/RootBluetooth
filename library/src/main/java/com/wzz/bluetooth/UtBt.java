@@ -194,7 +194,7 @@ public class UtBt {
     }
 
     // 发现设备时，需注册广播
-    private static final class FoundBtReceiver extends BroadcastReceiver {
+    public static final class FoundBtReceiver extends BroadcastReceiver {
         private InteLibBtDevice inteLibBtDevice;
 
         FoundBtReceiver(InteLibBtDevice inteLibBtDevice) {
