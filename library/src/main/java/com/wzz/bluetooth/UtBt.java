@@ -198,6 +198,9 @@ public class UtBt {
         private InteLibBtDevice inteLibBtDevice;
 
         FoundBtReceiver(InteLibBtDevice inteLibBtDevice) {
+            if(inteLibBtDevice==null){
+                throw new UnsupportedOperationException("inteLibBtDevice is null, failed to create an FoundBtReceiver instance");
+            }
             this.inteLibBtDevice = inteLibBtDevice;
         }
 
@@ -215,9 +218,10 @@ public class UtBt {
             }
             // Get the BluetoothDevice object from the Intent
             BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-            // 将名称和地址添加到数组适配器中，以便在ListVIEW中显示
-            //mArrayAdapter.add(device.getName() + "\n" + device.getAddress());
-            inteLibBtDevice.callBtDevice(device);
+            // 只回传未配对过的设备
+            if(device.getBondState()!=BluetoothDevice.BOND_BONDED){
+                inteLibBtDevice.callBtDevice(device);
+            }
         }
     }
 

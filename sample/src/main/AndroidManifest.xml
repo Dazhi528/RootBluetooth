@@ -3,14 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.wzz.sample">
 
-    <!-- 需要硬件支持低功耗蓝牙 -->
-    <uses-feature
-        android:name="android.hardware.bluetooth_le"
-        android:required="true" />
-    <!-- 蓝牙权限 -->
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-    <uses-permission android:name="android.permission.BLUETOOTH" />
-    <!-- Android 5.0以上蓝牙需要位置权限 -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="andriod.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.WRITE_APN_SETTINGS"
@@ -22,7 +14,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
